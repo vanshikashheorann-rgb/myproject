@@ -1,0 +1,165 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 460" width="600" height="460">
+  <defs>
+    <!-- Dark Studio Vignette Background -->
+    <radialGradient id="studioBg" cx="50%" cy="45%" r="70%">
+      <stop offset="0%" stop-color="#111827" />
+      <stop offset="50%" stop-color="#0a0f1d" />
+      <stop offset="100%" stop-color="#050811" />
+    </radialGradient>
+
+    <!-- Human Skin Gradients (Warm healthy melanin tones) -->
+    <linearGradient id="skinPrimary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f0caa7" />
+      <stop offset="30%" stop-color="#d49b72" />
+      <stop offset="70%" stop-color="#b4744d" />
+      <stop offset="100%" stop-color="#804728" />
+    </linearGradient>
+
+    <linearGradient id="skinSecondary" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#eed0b3" />
+      <stop offset="35%" stop-color="#ce956d" />
+      <stop offset="75%" stop-color="#af6e47" />
+      <stop offset="100%" stop-color="#7a4225" />
+    </linearGradient>
+
+    <!-- Palmar Pad Highlight -->
+    <radialGradient id="palmarPad" cx="45%" cy="40%" r="50%">
+      <stop offset="0%" stop-color="#f7d9bf" stop-opacity="0.9" />
+      <stop offset="50%" stop-color="#d99f77" stop-opacity="0.5" />
+      <stop offset="100%" stop-color="#aa6943" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Translucent Keratin Nail Gradient -->
+    <linearGradient id="nailPlate" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="30%" stop-color="#f5ded2" />
+      <stop offset="80%" stop-color="#e2b7a0" />
+      <stop offset="100%" stop-color="#b87a55" />
+    </linearGradient>
+
+    <!-- Soft Depth Shadow -->
+    <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="16" flood-color="#000000" flood-opacity="0.75" />
+    </filter>
+
+    <!-- Subtle Edge Ambient Occlusion -->
+    <filter id="edgeGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#542c16" flood-opacity="0.45" />
+    </filter>
+
+    <!-- Motion Indicator Marker -->
+    <marker id="motionArrow" viewBox="0 0 10 10" refX="6" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 1 L 9 5 L 0 9 z" fill="#38bdf8" />
+    </marker>
+  </defs>
+
+  <!-- Clean Studio Backdrop -->
+  <rect width="100%" height="100%" fill="url(#studioBg)" rx="20" />
+
+  <!-- Subtle Studio Technical Guides -->
+  <g opacity="0.08" stroke="#38bdf8" stroke-width="0.75">
+    <line x1="60" y1="0" x2="60" y2="460" />
+    <line x1="540" y1="0" x2="540" y2="460" />
+    <line x1="0" y1="400" x2="600" y2="400" />
+    <circle cx="300" cy="230" r="170" fill="none" stroke-dasharray="4,4" />
+  </g>
+
+  <!-- Hand Demonstration Graphic Group -->
+  <g id="hand-illustration" filter="url(#softShadow)">
+    
+      <!-- Tap marker and question wave -->
+      <circle cx="300" cy="215" r="15" fill="none" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="3,3" opacity="0.85" />
+      <path d="M 280 160 Q 300 135 320 160" stroke="#38bdf8" stroke-width="2.5" fill="none" marker-end="url(#motionArrow)" opacity="0.85" />
+
+      <!-- Non-dominant flat hand palm facing body -->
+      
+      <g transform="rotate(-28 190 310)">
+        <!-- Arm Muscle Contour -->
+        <path d="M 156.7 420 
+                 C 149.3 365, 154.48000000000002 332, 158.92000000000002 310
+                 L 221.07999999999998 310
+                 C 225.51999999999998 332, 230.7 365, 223.3 420 Z" 
+              fill="url(#skinSecondary)" stroke="#6e371b" stroke-width="1.4" />
+        <!-- Wrist Crease Lines -->
+        <path d="M 164.1 316 Q 190 322 215.9 316" stroke="#783e20" stroke-width="1.5" fill="none" opacity="0.7" />
+        <path d="M 167.8 324 Q 190 328 212.2 324" stroke="#783e20" stroke-width="1.2" fill="none" opacity="0.5" />
+      </g>
+    
+      <path d="M 195 280 C 200 240, 220 220, 290 220 C 310 220, 320 240, 310 280 Z" fill="url(#skinSecondary)" stroke="#6e371b" stroke-width="1.4" />
+
+      <!-- Dominant Hand: Two fingers tapping across palm -->
+      
+      <g transform="rotate(32 390 300)">
+        <!-- Arm Muscle Contour -->
+        <path d="M 357.6 410 
+                 C 350.4 355, 355.44 322, 359.76 300
+                 L 420.24 300
+                 C 424.56 322, 429.6 355, 422.4 410 Z" 
+              fill="url(#skinPrimary)" stroke="#6e371b" stroke-width="1.4" />
+        <!-- Wrist Crease Lines -->
+        <path d="M 364.8 306 Q 390 312 415.2 306" stroke="#783e20" stroke-width="1.5" fill="none" opacity="0.7" />
+        <path d="M 368.4 314 Q 390 318 411.6 314" stroke="#783e20" stroke-width="1.2" fill="none" opacity="0.5" />
+      </g>
+    
+      
+      <!-- Finger Phalanx Body -->
+      <path d="M 326.1964356443337 233.15677008332986 
+               L 250.07312919157837 195.27659301537122 
+               Q 252.96383810188476 181.87744775204055 255.85454701219115 182.87830248870986 
+               L 333.8035643556663 216.84322991667014 Z" 
+            fill="url(#skinPrimary)" stroke="#743c1f" stroke-width="1.2" />
+
+      <!-- Joint Crease Rings (PIP & DIP Knuckle Folds) -->
+      <line x1="284.43511689727694" y1="212.09428313361937" 
+            x2="290.8251050147963" y2="198.3909093936252" 
+            stroke="#65331a" stroke-width="1.4" opacity="0.75" />
+      <line x1="282.0204786846203" y1="210.17388674173088" 
+            x2="287.80189650523306" y2="197.77559621506953" 
+            stroke="#65331a" stroke-width="1.0" opacity="0.6" />
+
+      
+      <!-- Fingernail Plate -->
+      <ellipse cx="256.58906925003134" cy="190.76792079900335" rx="6.12" ry="8.1" 
+               transform="rotate(-65 256.58906925003134 190.76792079900335)" 
+               fill="url(#nailPlate)" stroke="#8d5130" stroke-width="0.8" />
+      
+    
+      
+      <!-- Finger Phalanx Body -->
+      <path d="M 336.1964356443337 248.15677008332986 
+               L 260.0731291915784 210.27659301537122 
+               Q 262.9638381018848 196.87744775204055 265.8545470121912 197.87830248870986 
+               L 343.8035643556663 231.84322991667014 Z" 
+            fill="url(#skinPrimary)" stroke="#743c1f" stroke-width="1.2" />
+
+      <!-- Joint Crease Rings (PIP & DIP Knuckle Folds) -->
+      <line x1="294.43511689727694" y1="227.09428313361937" 
+            x2="300.8251050147963" y2="213.3909093936252" 
+            stroke="#65331a" stroke-width="1.4" opacity="0.75" />
+      <line x1="292.0204786846203" y1="225.17388674173088" 
+            x2="297.80189650523306" y2="212.77559621506953" 
+            stroke="#65331a" stroke-width="1.0" opacity="0.6" />
+
+      
+      <!-- Fingernail Plate -->
+      <ellipse cx="266.5890692500314" cy="205.76792079900335" rx="6.12" ry="8.1" 
+               transform="rotate(-65 266.5890692500314 205.76792079900335)" 
+               fill="url(#nailPlate)" stroke="#8d5130" stroke-width="0.8" />
+      
+    
+    
+  </g>
+
+  <!-- ISL Verification Header Badge -->
+  <g transform="translate(24, 28)">
+    <rect width="112" height="26" rx="6" fill="#0b1329" fill-opacity="0.9" stroke="#38bdf8" stroke-width="1" />
+    <circle cx="14" cy="13" r="4.5" fill="#10b981" />
+    <text x="26" y="17" fill="#94a3b8" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="700" letter-spacing="0.5">ISL VERIFIED</text>
+  </g>
+
+  <!-- Label and Grammar Role -->
+  <g transform="translate(576, 30)" text-anchor="end">
+    <text fill="#ffffff" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="16" font-weight="800" letter-spacing="0.5">WHAT IS YOUR NAME</text>
+    <text y="18" fill="#38bdf8" font-family="'Plus Jakarta Sans', system-ui, sans-serif" font-size="11" font-weight="600">ISL: YOUR + NAME + WHAT</text>
+  </g>
+</svg>

@@ -1,0 +1,21 @@
+{
+  "name": "signify-isl-translator",
+  "version": "2.0.0",
+  "description": "SIGNIFY – Indian Sign Language (ISL) Translator with Continuous 2D Hand Playback",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "generate-assets": "node scripts/generate-assets.js"
+  },
+  "keywords": [
+    "signify",
+    "indian-sign-language",
+    "isl",
+    "accessibility",
+    "translator",
+    "speech-recognition",
+    "continuous-playback"
+  ],
+  "author": "SIGNIFY Team",
+  "license": "MIT"
+}

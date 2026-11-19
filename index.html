@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIGNIFY – Indian Sign Language (ISL) Translator | Your Words. Their Language.</title>
+  <meta name="description"
+    content="SIGNIFY is an accessibility-focused web application that bridges communication between spoken/written language and Indian Sign Language (ISL) through continuous 2D hand demonstrations.">
+
+  <!-- Google Fonts: Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+
+  <!-- Tailwind CSS CDN for high-velocity modern utility layout -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              indigo: '#6366f1'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Custom Core Stylesheets -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/animations.css">
+</head>
+
+<body
+  class="bg-[#060913] text-slate-100 selection:bg-sky-500 selection:text-slate-950 font-['Plus_Jakarta_Sans',sans-serif]">
+
+  <!-- Three.js 3D Background Canvas Mount -->
+  <div id="three-bg-canvas-container" class="fixed inset-0 pointer-events-none z-0"></div>
+
+  <!-- SITE HEADER / NAVIGATION -->
+  <header class="site-header">
+    <div class="app-container flex items-center justify-between h-20">
+
+      <!-- Brand Logo -->
+      <a href="#home" class="brand-logo group">
+        <div class="brand-icon-box group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+              d="M14 10V4a2 2 0 00-4 0v7M10 10.5V6a2 2 0 00-4 0v8M18 11V6a2 2 0 00-4 0v5M18 8a2 2 0 114 0v6a8 8 0 01-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 012.83-2.82L7 15" />
+          </svg>
+        </div>
+        <div>
+          <span class="brand-title">SIGNIFY</span>
+          <span class="brand-tagline-sub block">Your Words. Their Language.</span>
+        </div>
+      </a>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex items-center gap-1.5" aria-label="Main Navigation">
+        <a href="#home" class="nav-anchor active">Home</a>
+        <a href="#translator" class="nav-anchor">Translator</a>
+        <a href="#dictionary" class="nav-anchor">Sign Dictionary</a>
+        <a href="#learn" class="nav-anchor">Learn ISL</a>
+        <a href="#about" class="nav-anchor">About</a>
+      </nav>
+
+      <!-- Header Action Controls -->
+      <div class="hidden sm:flex items-center gap-3">
+        <!-- SFX Audio Feedback Toggle -->
+        <button type="button" id="btn-toggle-audio"
+          class="p-2.5 rounded-xl bg-slate-900/80 border border-slate-700/60 hover:border-sky-500/50 transition-colors flex items-center gap-1.5"
+          title="Toggle audio feedback sound effects">
+          <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
+          <span class="text-xs text-sky-400 font-semibold">SFX</span>
+        </button>
+
+        <!-- CTA Start Translating Button -->
+        <a href="#translator" class="btn-primary">
+          <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" />
+            <line x1="12" y1="19" x2="12" y2="22" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+          </svg>
+          <span>Start Translating</span>
+        </a>
+      </div>
+
+      <!-- Mobile Hamburger Button -->
+      <button type="button" id="btn-mobile-menu"
+        class="md:hidden p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300"
+        aria-label="Toggle navigation menu">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+        </svg>
+      </button>
+
+    </div>
+
+    <!-- Mobile Navigation Drawer -->
+    <div id="mobile-nav-panel" class="hidden md:hidden px-4 pt-2 pb-6 bg-[#080d1b] border-b border-slate-800">
+      <div class="flex flex-col gap-2">
+        <a href="#home" class="nav-anchor">Home</a>
+        <a href="#translator" class="nav-anchor">Translator</a>
+        <a href="#dictionary" class="nav-anchor">Sign Dictionary</a>
+        <a href="#learn" class="nav-anchor">Learn ISL</a>
+        <a href="#about" class="nav-anchor">About</a>
+        <a href="#translator" class="btn-primary mt-2 justify-center">Start Translating</a>
+      </div>
+    </div>
+  </header>
+
+
+  <!-- 1. MAIN DASHBOARD / HERO SECTION -->
+  <section id="home" class="hero-section relative z-10">
+    <div class="app-container">
+      <div class="max-w-4xl mx-auto text-center">
+
+        <!-- Animated Futuristic Pill Badge -->
+        <div
+          class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-bold tracking-wide uppercase mb-6 shadow-sm">
+          <span class="w-2 h-2 rounded-full bg-sky-400 animate-ping"></span>
+          <span>Indian Sign Language (ISL) 3D Engine 3.0</span>
+          <span class="text-slate-500">•</span>
+          <span class="text-indigo-300">Realistic Rigged 3D Hands</span>
+        </div>
+
+        <!-- Main Heading -->
+        <h1 class="hero-title mb-6">
+          Communication <br class="hidden sm:inline" />
+          <span class="gradient-text">Without Barriers.</span>
+        </h1>
+
+        <!-- Subtitle & Description -->
+        <p class="hero-description mx-auto mb-8">
+          Type or speak in English or Hindi and watch verified Indian Sign Language demonstrations flow seamlessly in
+          real-time with anatomically accurate 3D human hands, articulated finger joints, and interactive 360° orbit rotation.
+        </p>
+
+        <!-- CTA Action Buttons -->
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-16">
+          <button type="button" id="btn-hero-cta" class="btn-primary text-base py-3.5 px-8">
+            <span>Start Translating</span>
+            <svg class="w-4 h-4 fill-none stroke-current" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+          </button>
+
+          <a href="#dictionary" class="btn-secondary text-base py-3.5 px-8">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+            <span>Explore Sign Dictionary</span>
+          </a>
+        </div>
+
+        <!-- Live Platform Stats Grid -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
+          <div class="stat-card">
+            <span class="stat-val text-sky-400">80+</span>
+            <span class="stat-label">Verified ISL Signs</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-val text-indigo-400">EN • HI</span>
+            <span class="stat-label">Bilingual Input</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-val text-emerald-400">0 ms</span>
+            <span class="stat-label">Gapless Playback</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-val text-purple-400">A – Z</span>
+            <span class="stat-label">Two-Handed Alphabet</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+
+  <!-- 2. TEXT-TO-SIGN & VOICE-TO-SIGN TRANSLATOR SECTION -->
+  <section id="translator" class="py-16 relative z-10">
+    <div class="app-container">
+
+      <!-- Section Header -->
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/10 border border-sky-500/20 text-sky-400 text-xs font-bold uppercase mb-3">
+          <span>Continuous Translation Suite</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Your Words to Continuous ISL</h2>
+        <p class="text-slate-400 text-sm sm:text-base">Enter or speak any message below. The engine converts your
+          sentence into continuous, verified Indian Sign Language hand demonstrations without awkward pauses.</p>
+      </div>
+
+      <!-- Main Translator Grid (Input Box on Left, Demonstration Viewport on Right) -->
+      <div class="grid-cols-translator">
+
+        <!-- LEFT COLUMN: Input Card (Text, Voice, Examples, Grammar Banner) -->
+        <div class="flex flex-col gap-5">
+          <div class="translator-input-card">
+
+            <!-- Language Selection & Input Header -->
+            <div class="input-header-row">
+              <label for="translator-text-input"
+                class="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-2">
+                <svg class="w-4 h-4 text-sky-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+                <span>Input Message</span>
+              </label>
+
+              <!-- English / Hindi Language Switcher -->
+              <div class="language-selector-wrap">
+                <span class="text-[11px] text-slate-400 font-semibold">Language:</span>
+                <select id="input-language-select" class="language-select-dropdown" aria-label="Select input language">
+                  <option value="en">English (India)</option>
+                  <option value="hi">हिन्दी (Hindi)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Large Textarea with Clear Button & Character Counter -->
+            <div class="translator-textarea-wrap">
+              <textarea id="translator-text-input" class="translator-textarea" maxlength="180" rows="4"
+                placeholder="Type or speak a message... (e.g. 'Hello, how are you?', 'Where is the hospital?', 'नमस्ते आप कैसे हैं?')"></textarea>
+
+              <!-- Clear Input Button -->
+              <button type="button" id="btn-clear-text" class="btn-clear-input opacity-0 pointer-events-none"
+                title="Clear input text" aria-label="Clear input">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+
+              <!-- Character Counter -->
+              <div
+                class="absolute bottom-3 right-3 text-[11px] font-mono text-slate-400 bg-slate-900/80 px-2 py-0.5 rounded border border-slate-700/60 pointer-events-none"
+                id="char-counter">
+                0 / 180
+              </div>
+            </div>
+
+            <!-- Voice Input & Translate Actions Bar -->
+            <div class="input-bottom-actions">
+
+              <!-- Microphone Speech Recognition Button -->
+              <div class="flex items-center gap-3">
+                <button type="button" id="btn-voice-input" class="btn-mic" aria-label="Start microphone voice input"
+                  title="Click to speak">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                  </svg>
+                  <span id="voice-btn-label">Speak</span>
+                </button>
+
+                <!-- Audio Visualizer Waves (Shown while recording) -->
+                <div id="voice-visualizer" class="voice-visualizer">
+                  <div class="voice-bar"></div>
+                  <div class="voice-bar"></div>
+                  <div class="voice-bar"></div>
+                  <div class="voice-bar"></div>
+                </div>
+
+                <!-- Speech status indicator -->
+                <span id="voice-status-indicator" class="voice-status-indicator"></span>
+              </div>
+
+              <!-- Primary Translate Button -->
+              <button type="button" id="btn-execute-translate" class="btn-execute-translate">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                </svg>
+                <span>Translate to ISL</span>
+              </button>
+
+            </div>
+
+            <!-- Clickable Example Message Chips -->
+            <div class="example-chips-wrap">
+              <div class="example-chips-title">Try Example Phrases:</div>
+              <div class="example-chips-list">
+                <!-- English Examples -->
+                <button type="button" class="example-prompt-chip" data-lang="en" data-text="Hello, how are you?">"Hello,
+                  how are you?"</button>
+                <button type="button" class="example-prompt-chip" data-lang="en" data-text="Thank you very much">"Thank
+                  you very much"</button>
+                <button type="button" class="example-prompt-chip" data-lang="en" data-text="I need help">"I need
+                  help"</button>
+                <button type="button" class="example-prompt-chip" data-lang="en"
+                  data-text="Where is the hospital?">"Where is the hospital?"</button>
+                <button type="button" class="example-prompt-chip" data-lang="en" data-text="Good morning teacher">"Good
+                  morning teacher"</button>
+                <button type="button" class="example-prompt-chip" data-lang="en" data-text="Water please">"Water
+                  please"</button>
+                <button type="button" class="example-prompt-chip" data-lang="en" data-text="Nice to meet you">"Nice to
+                  meet you"</button>
+
+                <!-- Hindi Examples -->
+                <button type="button" class="example-prompt-chip hidden" data-lang="hi"
+                  data-text="नमस्ते आप कैसे हैं?">"नमस्ते आप कैसे हैं?"</button>
+                <button type="button" class="example-prompt-chip hidden" data-lang="hi"
+                  data-text="धन्यवाद">"धन्यवाद"</button>
+                <button type="button" class="example-prompt-chip hidden" data-lang="hi" data-text="मुझे मदद चाहिए">"मुझे
+                  मदद चाहिए"</button>
+                <button type="button" class="example-prompt-chip hidden" data-lang="hi"
+                  data-text="अस्पताल कहाँ है?">"अस्पताल कहाँ है?"</button>
+                <button type="button" class="example-prompt-chip hidden" data-lang="hi"
+                  data-text="सुप्रभात">"सुप्रभात"</button>
+                <button type="button" class="example-prompt-chip hidden" data-lang="hi" data-text="पानी चाहिए">"पानी
+                  चाहिए"</button>
+              </div>
+            </div>
+
+            <!-- ISL Grammar Summary Notice Banner -->
+            <div id="translation-grammar-banner" class="translation-grammar-banner hidden"></div>
+
+            <!-- Translation Error / Guidance Notification -->
+            <div id="translation-error-notice"
+              class="hidden mt-3 p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs font-medium">
+            </div>
+
+          </div>
+        </div>
+
+
+        <!-- RIGHT COLUMN: 3D Hand Demonstration Viewport & Continuous Playback Engine -->
+        <div class="flex flex-col">
+          <div id="demonstration-stage-container" class="demonstration-stage-container">
+
+            <!-- Continuous Demonstration Viewport Stage (Dual-Mode: 2D Studio & 3D Rigged) -->
+            <div id="demonstration-stage" class="demonstration-viewport" role="region" aria-label="Indian Sign Language Demonstration Viewport">
+
+              <!-- Dual-buffer 2D Layers for Gapless Crossfade (Photorealistic 2D Human Hand Visuals) -->
+              <img id="playback-layer-a" class="playback-layer" src="assets/signs/namaste.svg" alt="ISL Hand Demonstration Layer A" />
+              <img id="playback-layer-b" class="playback-layer" src="assets/signs/welcome.svg" alt="ISL Hand Demonstration Layer B" />
+
+              <!-- Subtle Holographic Scanning Beam -->
+              <div class="viewport-scanline"></div>
+
+              <!-- Top Viewport HUD -->
+              <div class="viewport-hud">
+                <div class="flex items-center gap-2">
+                  <!-- Mode Switcher Pill (2D Studio vs 3D Rigged) -->
+                  <div class="mode-toggle-group" role="group" aria-label="Demonstration View Mode">
+                    <button type="button" id="btn-mode-2d" class="btn-mode-toggle active" title="Switch to 2D Studio View (Photorealistic Hand Demonstrations)">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+                      <span>2D Studio</span>
+                    </button>
+                    <button type="button" id="btn-mode-3d" class="btn-mode-toggle" title="Switch to 3D Interactive View (Three.js Rigged Anatomical Hands with 360° Orbit)">
+                      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"/></svg>
+                      <span>3D Rigged</span>
+                    </button>
+                  </div>
+
+                  <div id="active-sign-badge" class="hud-badge">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <span>ISL 2D STUDIO</span>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                  <div id="orbit-hint-badge" class="orbit-hint-badge hidden" title="Click and drag anywhere on the 3D viewport to freely rotate the hand">
+                    <svg class="w-3.5 h-3.5 text-sky-400 animate-spin" style="animation-duration: 10s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Drag to Rotate 3D</span>
+                  </div>
+                  <div id="playback-counter" class="hud-counter">
+                    Sign 1 of 2
+                  </div>
+                </div>
+              </div>
+
+              <!-- Bottom Viewport HUD (Current Sign Title, Description & Angle Presets) -->
+              <div class="viewport-bottom-hud">
+                <div class="active-sign-banner">
+                  <h3 id="active-sign-title" class="active-sign-title">NAMASTE / HELLO</h3>
+                  <p id="active-sign-desc" class="active-sign-desc">Palms pressed together at chest level with gentle forward nod.</p>
+                </div>
+
+                <div class="flex flex-col items-end gap-1.5">
+                  <!-- 3D Camera View Angle Presets (Visible only in 3D mode) -->
+                  <div id="view-presets-bar" class="view-presets-bar hidden">
+                    <button type="button" id="btn-view-front" class="btn-view-angle active" title="Front camera angle">Front</button>
+                    <button type="button" id="btn-view-3d" class="btn-view-angle" title="3D perspective angle">3D Angle</button>
+                    <button type="button" id="btn-view-top" class="btn-view-angle" title="Top-down angle">Top</button>
+                    <button type="button" id="btn-view-reset" class="btn-view-angle" title="Reset camera rotation">Reset</button>
+                  </div>
+                  <span id="playback-time-display" class="playback-time-badge bg-black/60 px-2.5 py-1 rounded border border-slate-700">0.0s / 3.6s (1.0x)</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Master Scrubbable Progress Bar -->
+            <div id="playback-progress-bar" class="playback-progress-track"
+              title="Click or drag to seek anywhere in the sign sequence">
+              <div id="playback-progress-fill" class="playback-progress-fill"></div>
+            </div>
+
+            <!-- Player Controls Toolbar -->
+            <div class="player-controls-bar">
+
+              <!-- Control Buttons Group -->
+              <div class="player-btn-group">
+                <!-- Replay Entire Sentence -->
+                <button type="button" id="btn-replay-all" class="control-icon-btn" title="Replay entire sequence"
+                  aria-label="Replay sentence">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </button>
+
+                <!-- Previous Sign -->
+                <button type="button" id="btn-prev-sign" class="control-icon-btn" title="Previous sign"
+                  aria-label="Previous sign">
+                  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <polygon points="19 20 9 12 19 4 19 20"></polygon>
+                    <line x1="5" y1="19" x2="5" y2="5" stroke="currentColor" stroke-width="3"></line>
+                  </svg>
+                </button>
+
+                <!-- Play / Pause Master Toggle -->
+                <button type="button" id="btn-play-pause" class="btn-play-pause"
+                  title="Play or pause continuous sequence" aria-label="Play or pause">
+                  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <polygon points="6 3 20 12 6 21 6 3"></polygon>
+                  </svg>
+                  <span>Play</span>
+                </button>
+
+                <!-- Next Sign -->
+                <button type="button" id="btn-next-sign" class="control-icon-btn" title="Next sign"
+                  aria-label="Next sign">
+                  <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                    <polygon points="5 4 15 12 5 20 5 4"></polygon>
+                    <line x1="19" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="3"></line>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Speed Selector & Utility Controls -->
+              <div class="flex items-center gap-3">
+                <!-- Speed Multiplier (Slow-Motion supported) -->
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[11px] font-semibold text-slate-400">Speed:</span>
+                  <select id="playback-speed-select" class="playback-speed-select" aria-label="Playback speed">
+                    <option value="0.5">0.5x (Slow-Mo)</option>
+                    <option value="0.75">0.75x</option>
+                    <option value="1.0" selected>1.0x (Normal)</option>
+                    <option value="1.25">1.25x</option>
+                    <option value="1.5">1.5x</option>
+                  </select>
+                </div>
+
+                <!-- Fullscreen Toggle -->
+                <button type="button" id="btn-toggle-fullscreen" class="control-icon-btn" title="Toggle fullscreen view"
+                  aria-label="Toggle fullscreen">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+                  </svg>
+                </button>
+              </div>
+
+            </div>
+
+            <!-- Continuous Sign Sequence Interactive Token Ribbon -->
+            <div id="playback-tokens-timeline" class="playback-tokens-timeline" aria-label="Sequence timeline chips">
+              <!-- Dynamically populated chips for each sign in sentence -->
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 3. SIGN DICTIONARY SECTION -->
+  <section id="dictionary" class="py-16 relative z-10 border-t border-slate-900 bg-[#050812]/70">
+    <div class="app-container">
+
+      <!-- Header & Search Input -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8">
+        <div>
+          <div
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-bold uppercase mb-3">
+            <span>Verified Lexicon</span>
+          </div>
+          <h2 class="text-3xl font-extrabold text-white mb-2">Indian Sign Language Dictionary</h2>
+          <p class="text-slate-400 text-sm max-w-xl">Search verified ISL gestures by English term or Hindi translation.
+            Click any entry to inspect its hand movements or demonstrate it in the player.</p>
+        </div>
+
+        <!-- Search Bar with Live Filter -->
+        <div class="w-full md:w-80 relative">
+          <input type="text" id="dict-search-input"
+            class="w-full bg-slate-900/90 border border-slate-700 rounded-xl px-4 py-2.5 pl-10 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 transition-colors"
+            placeholder="Search word or Hindi translation..." />
+          <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" fill="none" stroke="currentColor"
+            viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto pb-4 mb-6" id="dict-category-pills"></div>
+
+      <!-- Results Count Badge -->
+      <div class="text-xs font-semibold text-slate-400 mb-6 flex items-center justify-between">
+        <span id="dict-results-count">Showing verified signs...</span>
+        <span class="text-sky-400">Expandable Lexicon Database</span>
+      </div>
+
+      <!-- Dictionary Cards Grid -->
+      <div id="dictionary-grid" class="dict-grid"></div>
+
+    </div>
+  </section>
+
+
+  <!-- 4. LEARN ISL SECTION -->
+  <section id="learn" class="py-16 relative z-10 border-t border-slate-900">
+    <div class="app-container">
+
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold uppercase mb-3">
+          <span>Interactive Academy</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">Learn Indian Sign Language</h2>
+        <p class="text-slate-400 text-sm sm:text-base">Master essential ISL grammar, two-handed manual fingerspelling,
+          and everyday communication through structured interactive modules and practice quizzes.</p>
+      </div>
+
+      <!-- Interactive Learn Layout: Lesson Nav on Left, Lesson Content on Right -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
+
+        <!-- Module Selector Navigation (4 Columns) -->
+        <div class="lg:col-span-4 flex flex-col gap-2.5" id="lesson-nav-list">
+          <button type="button" class="lesson-nav-btn active" data-lesson="lesson-1">
+            <div class="text-left">
+              <span class="text-[10px] uppercase font-bold text-sky-400 block tracking-wider">Module 1</span>
+              <strong class="text-white text-sm">ISL Basics & Two-Handed Alphabet</strong>
+            </div>
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <button type="button" class="lesson-nav-btn" data-lesson="lesson-2">
+            <div class="text-left">
+              <span class="text-[10px] uppercase font-bold text-sky-400 block tracking-wider">Module 2</span>
+              <strong class="text-white text-sm">Greetings & Social Etiquette</strong>
+            </div>
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <button type="button" class="lesson-nav-btn" data-lesson="lesson-3">
+            <div class="text-left">
+              <span class="text-[10px] uppercase font-bold text-sky-400 block tracking-wider">Module 3</span>
+              <strong class="text-white text-sm">Emergency & Medical Life-Savers</strong>
+            </div>
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          <button type="button" class="lesson-nav-btn" data-lesson="lesson-4">
+            <div class="text-left">
+              <span class="text-[10px] uppercase font-bold text-sky-400 block tracking-wider">Module 4</span>
+              <strong class="text-white text-sm">Daily Inquiries & ISL Grammar</strong>
+            </div>
+            <svg class="w-4 h-4 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <!-- Active Lesson Viewport Content (8 Columns) -->
+        <div class="lg:col-span-8">
+          <div id="lesson-display-content" class="glass-panel p-6 sm:p-8"></div>
+        </div>
+
+      </div>
+
+      <!-- Interactive Sign Knowledge Quiz Mount -->
+      <div class="mt-12">
+        <div class="text-center mb-6">
+          <h3 class="text-xl font-bold text-white">Test Your Sign Recognition</h3>
+          <p class="text-xs text-slate-400">Interactive quick-fire practice to build visual memory</p>
+        </div>
+        <div id="learn-quiz-box"></div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- 5. ABOUT SECTION -->
+  <section id="about" class="py-16 relative z-10 border-t border-slate-900 bg-[#050812]/80">
+    <div class="app-container">
+
+      <!-- Header -->
+      <div class="text-center max-w-2xl mx-auto mb-12">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold uppercase mb-3">
+          <span>Mission & Architecture</span>
+        </div>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-white mb-3">About SIGNIFY</h2>
+        <p class="text-slate-400 text-sm sm:text-base">Bridging communication divides with respectful, verified Indian
+          Sign Language technology.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+
+        <!-- Purpose Card -->
+        <div class="glass-panel p-6 rounded-2xl">
+          <div
+            class="w-10 h-10 rounded-xl bg-sky-500/15 border border-sky-500/30 flex items-center justify-center text-sky-400 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Why SIGNIFY Was Created</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Over 18 million individuals in India have hearing loss or utilize Indian Sign Language (ISL) as their
+            primary natural language. SIGNIFY addresses critical everyday barriers in healthcare, transportation,
+            classrooms, and social spaces where hearing non-signers and Deaf signers interact.
+          </p>
+        </div>
+
+        <!-- Technical Innovation Card -->
+        <div class="glass-panel p-6 rounded-2xl">
+          <div
+            class="w-10 h-10 rounded-xl bg-indigo-500/15 border border-indigo-500/30 flex items-center justify-center text-indigo-400 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Continuous Playback Engine</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            Traditional tools force users to click isolated signs with annoying blank screens between gestures. SIGNIFY
+            introduces a dual-buffering continuous animation pipeline that preloads upcoming signs, synchronizes
+            timeline playback, and enforces authentic ISL grammar structure.
+          </p>
+        </div>
+
+        <!-- Scope & Future Roadmap Card -->
+        <div class="glass-panel p-6 rounded-2xl">
+          <div
+            class="w-10 h-10 rounded-xl bg-purple-500/15 border border-purple-500/30 flex items-center justify-center text-purple-400 mb-4">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">Scope & Future Evolution</h3>
+          <p class="text-xs text-slate-300 leading-relaxed">
+            SIGNIFY uses a structured verified lexicon rather than uncontrolled automatic guessing. Future versions will
+            integrate computer-vision two-way sign recognition (ISL camera back to spoken audio) and expand regional
+            dialectical variations across Indian states.
+          </p>
+        </div>
+
+      </div>
+
+      <!-- Respectful Culture Notice Box -->
+      <div
+        class="glass-panel p-6 rounded-2xl border border-indigo-500/30 bg-indigo-950/20 text-slate-300 text-xs leading-relaxed max-w-4xl mx-auto flex items-start gap-3">
+        <svg class="w-5 h-5 text-indigo-400 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div>
+          <strong class="text-white font-semibold">Linguistic & Cultural Respect:</strong> Indian Sign Language (ISL) is
+          a rich, autonomous natural language with complex morphology, spatial syntax, and cultural heritage
+          standardized through the Indian Sign Language Research and Training Centre (ISLRTC). Members of the Deaf
+          community are visual-spatial linguistic peers, not individuals lacking capability.
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+
+  <!-- SIGN DETAIL MODAL DIALOG -->
+  <div id="sign-detail-modal" class="modal-overlay hidden" role="dialog" aria-modal="true"
+    aria-labelledby="modal-sign-title">
+    <div class="modal-content-card">
+
+      <!-- Modal Header -->
+      <div class="p-4 px-6 border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-sky-400"></span>
+          <span class="text-xs font-bold text-sky-400 uppercase tracking-wider modal-sign-category">ISL
+            Demonstrator</span>
+        </div>
+        <button type="button" class="modal-close-btn text-slate-400 hover:text-white p-1 text-xl leading-none"
+          aria-label="Close modal">&times;</button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6">
+        <div
+          class="w-full h-56 bg-slate-950 rounded-xl overflow-hidden border border-slate-800 p-2 mb-4 flex items-center justify-center">
+          <img src="assets/signs/namaste.svg" alt="Sign detail demonstration"
+            class="modal-sign-image w-full h-full object-contain" />
+        </div>
+
+        <div class="flex items-start justify-between gap-3 mb-2">
+          <h3 id="modal-sign-title" class="text-2xl font-bold text-white modal-sign-title">Sign Title</h3>
+          <span
+            class="text-xs font-semibold px-2.5 py-1 rounded-md bg-sky-500/15 text-sky-300 border border-sky-500/30 modal-sign-hindi">हिन्दी</span>
+        </div>
+
+        <p class="text-xs text-slate-300 leading-relaxed mb-4 modal-sign-desc">Sign description text...</p>
+
+        <div class="p-3.5 rounded-xl bg-slate-900/80 border border-slate-800 text-xs text-slate-400 mb-6">
+          <strong class="text-white block mb-1">ISL Grammar & Movement Guideline:</strong>
+          <span class="modal-sign-grammar">Authentic execution details...</span>
+        </div>
+
+        <!-- Modal Actions -->
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+          <button type="button" class="modal-close-btn btn-secondary text-xs py-2 px-4">Close</button>
+          <button type="button" class="modal-btn-demo btn-primary text-xs py-2 px-4 flex items-center gap-2">
+            <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24">
+              <polygon points="6 3 20 12 6 21 6 3"></polygon>
+            </svg>
+            <span>Demonstrate in Translator</span>
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- FLOATING TOAST NOTIFICATION STACK -->
+  <div id="toast-container" aria-live="polite"></div>
+
+
+  <!-- SITE FOOTER -->
+  <footer class="site-footer">
+    <div class="app-container">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-900">
+
+        <div class="flex items-center gap-3">
+          <div class="brand-icon-box">
+            <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2"
+                d="M14 10V4a2 2 0 00-4 0v7M10 10.5V6a2 2 0 00-4 0v8M18 11V6a2 2 0 00-4 0v5M18 8a2 2 0 114 0v6a8 8 0 01-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 012.83-2.82L7 15" />
+            </svg>
+          </div>
+          <div>
+            <span class="text-lg font-bold text-white tracking-wide">SIGNIFY</span>
+            <span class="text-xs text-slate-500 block">Indian Sign Language Accessibility Platform</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-6 text-xs text-slate-400">
+          <a href="#home" class="hover:text-white transition-colors">Home</a>
+          <a href="#translator" class="hover:text-white transition-colors">Translator</a>
+          <a href="#dictionary" class="hover:text-white transition-colors">Dictionary</a>
+          <a href="#learn" class="hover:text-white transition-colors">Learn ISL</a>
+          <a href="#about" class="hover:text-white transition-colors">About</a>
+        </div>
+
+      </div>
+
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+        <p>© 2026 SIGNIFY Project. Built with standard-compliant Indian Sign Language (ISL) resources.</p>
+        <p class="flex items-center gap-2">
+          <span>Continuous Gapless Playback Engine</span>
+          <span>•</span>
+          <span class="text-sky-400 font-mono">v2.0 Production</span>
+        </p>
+      </div>
+    </div>
+  </footer>
+
+
+  <!-- Three.js CDN for 3D Cybernetic Mesh & 3D Hand Rendering -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+  <!-- 3D Hand Model, Verified ISL Poses & Viewport Renderer -->
+  <script src="js/hand-3d-model.js"></script>
+  <script src="js/sign-poses-3d.js"></script>
+  <script src="js/hand-renderer.js"></script>
+
+  <!-- Application Modules -->
+  <script src="js/audio-fx.js"></script>
+  <script src="js/three-bg.js"></script>
+  <script src="js/sign-library.js"></script>
+  <script src="js/playback-engine.js"></script>
+  <script src="js/voice-recognition.js"></script>
+  <script src="js/dictionary.js"></script>
+  <script src="js/learn.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+
+</html>
